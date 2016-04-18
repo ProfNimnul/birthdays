@@ -17,7 +17,7 @@ if not fname.endswith(".xlsx"):
         exit()
 rb = xlrd.open_workbook(fname)
 all_persons = list()
-persons_with_one_birth_data=dict()
+persons_with_one_birth_data=dict.fromkeys(range(1,31),[])
 
 sheets_list = rb.sheet_names() #нашли количество листов в книге
 # ws=rb.sheet_by_index(len(sheets_list)-1)
@@ -36,8 +36,7 @@ for rownum in range(sheet.nrows):
 
     if  not all_persons.get(day_of_birth,None): #такой даты нет вообще
         persons_with_one_birth_data.update(str(day_of_birth),update_person(info,all_persons))
-    else
-        persons_with_one_birth_data[str(day_of_birth)]=update_person()
+
 
 pass
 exit()
