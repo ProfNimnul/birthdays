@@ -2,11 +2,7 @@ import xlrd
 import xlwt
 import datetime
 from easygui import fileopenbox,msgbox
-
-
-def update_person(info, birthday=list()):
-    birthday.add(info)
-    return birthday
+import pprint
 
 
 fname = fileopenbox("Выберите файл с днями рождения", "")
@@ -31,12 +27,22 @@ for rownum in range(sheet.nrows):
     date_tuple = xlrd.xldate_as_tuple(rows[1],rb.datemode)
     full_date =  datetime.datetime(*date_tuple)
 
-    day_of_birth=date_tuple[2] #єто день рождения (именно ДЕНЬ)
-    info = sheet.cell(rownum, 0) + "$" + sheet.cell(rownum, 2)  # сформировали строку из ФИО и адреса
+     #єто день рождения (именно ДЕНЬ)
+    day_of_birth = date_tuple[2]
+    info = str(day_of_birth)+ "$"+rows[0] + "$" + rows[2]  # сформировали строку из ФИО и адреса
+    try:
 
-    if  not all_persons.get(day_of_birth,None): #такой даты нет вообще
-        persons_with_one_birth_data.update(str(day_of_birth),update_person(info,all_persons))
 
+        curr=(persons_with_one_birth_data.pop(day_of_birth))
+        curr.append(info)
+        persons_with_one_birth_data.update({day_of_birth:curr}) # получили список людей для данного ДР и удалили его
+
+
+    except AttributeError:
+        print("Ошибка добавления в словарь!")
+
+    info=None
+    curr=[]
 
 pass
 exit()
