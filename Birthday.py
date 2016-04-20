@@ -4,6 +4,8 @@ import datetime
 from easygui import fileopenbox,msgbox
 import pprint
 
+def MySort(info):
+    return int(info.split("$")[0])
 
 fname = fileopenbox("Выберите файл с днями рождения", "")
 if not fname:
@@ -13,7 +15,7 @@ if not fname.endswith(".xlsx"):
         exit()
 rb = xlrd.open_workbook(fname)
 all_persons = list()
-persons_with_one_birth_data=dict.fromkeys(range(1,31),[])
+
 
 sheets_list = rb.sheet_names() #нашли количество листов в книге
 # ws=rb.sheet_by_index(len(sheets_list)-1)
@@ -32,17 +34,14 @@ for rownum in range(sheet.nrows):
     info = str(day_of_birth)+ "$"+rows[0] + "$" + rows[2]  # сформировали строку из ФИО и адреса
     try:
 
-
-        curr=(persons_with_one_birth_data.pop(day_of_birth))
-        curr.append(info)
-        persons_with_one_birth_data.update({day_of_birth:curr}) # получили список людей для данного ДР и удалили его
+        all_persons.append(info)
 
 
     except AttributeError:
         print("Ошибка добавления в словарь!")
 
     info=None
-    curr=[]
+sorted_persons=(all_persons.sort(key=MySort))
 
 pass
 exit()
