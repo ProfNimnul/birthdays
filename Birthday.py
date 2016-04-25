@@ -1,8 +1,10 @@
 import xlrd
-from xlwt import Workbook
+
+from openpyxl import workbook as wbk
+from openpyxl.cell import *
 import datetime
 from easygui import fileopenbox,msgbox
-# from tempfile import TemporaryFile
+from tempfile import TemporaryFile
 
 def MySort(info):
     return int(info.split("$")[0])
@@ -42,23 +44,30 @@ for rownum in range(sheet.nrows):
         print("Ошибка добавления в словарь!")
 
     info=None
-all_persons.sort(key=MySort)
-new_wb=Workbook(encoding="utf-8")
-del sheet
-sheet=new_wb.add_sheet("Сортировано - "+old_sheet_name)
-sheet.write(0,0,"День рождения")
-sheet.write(0,1,"ФИО")
-sheet.write(0,2,"Адрес")
 
-row_count=1
+all_persons.sort(key=MySort)
+
+new_wb=wbk.Workbook()
+#new_wb=Workbook(encoding="utf-8")
+del sheet
+sheet=new_wb.create_sheet()
+sheet.name="Сортировано - "+old_sheet_name
+
+sheet.cell(row=1,column=1,value="День рождения")
+sheet.cell(row=1,column=2,value="ФИО")
+sheet.cell(row=1,column=3,value="Адрес")
+
+row_count=2
 for info in all_persons:
     bd,fio,adr=info.split("$")
-    sheet.write(row_count,0,bd)
-    sheet.write(row_count,1 ,fio)
-    sheet.write(row_count,2 ,adr)
-    row_count+=1
-new_wb.save("Sorted.xlsx")
-# new_wb.save(TemporaryFile())
+    sheet.cell(row=row_count,column=1,value=str(bd))
+    sheet.cell(row=row_count,column=2,value=fio)
+    sheet.cell(row=row_count,column=3,value=adr)
+
+    row_count=row_count+1
+
+new_wb.save(filename='Sorted.xlsx')
 
 pass
+msgbox("Конец!")
 exit()
